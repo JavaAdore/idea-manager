@@ -1,4 +1,4 @@
-package com.ideamanager.view.controller;
+package com.ideamanager.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

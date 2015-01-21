@@ -60,6 +60,20 @@
 		</dependency>
 
 
+<dependency>
+	<groupId>org.springframework</groupId>
+	<artifactId>spring-beans</artifactId>
+	<version>4.1.0.RELEASE</version>
+</dependency>
+
+
+
+<dependency>
+	<groupId>org.springframework</groupId>
+	<artifactId>spring-webflow</artifactId>
+	<version>1.0.5</version>
+</dependency>
+ 
 
 		<!-- Spring MVC framework -->
 		<dependency>
