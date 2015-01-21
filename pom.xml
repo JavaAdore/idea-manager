@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>meteocal-hs-cairo</groupId>
-	<artifactId>meteocal-hs-cairo</artifactId>
+	<groupId>idea-manager</groupId>
+	<artifactId>idea-manager</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
-	<build>
+	<build> 
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
 			<plugin>
@@ -61,26 +61,38 @@
 
 
 <dependency>
-	<groupId>org.springframework</groupId>
-	<artifactId>spring-beans</artifactId>
-	<version>4.1.0.RELEASE</version>
-</dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- Spring dependencies -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.framework.version}</version>
+		</dependency>
 
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring.framework.version}</version>
+		</dependency>
 
-
-<dependency>
-	<groupId>org.springframework</groupId>
-	<artifactId>spring-webflow</artifactId>
-	<version>1.0.5</version>
-</dependency>
- 
-
-		<!-- Spring MVC framework -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
 			<version>${spring.framework.version}</version>
 		</dependency>
+
+
+	<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+ 
 
 
 		<!-- JSTL -->
@@ -96,13 +108,7 @@
 			<version>1.1.2</version>
 		</dependency>
 
-		<!-- for compile only, your container should have this -->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
-			<scope>provided</scope>
-		</dependency>
+	    
  
 
 

@@ -1,20 +1,23 @@
 package com.ideamanager.controller;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
- 
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.AbstractController;
  
-public class HelloWorldController extends AbstractController{
+@Controller
+public class HelloWorldController {
+	String message = "Welcome to Spring MVC!";
  
-	@Override
-	protected ModelAndView handleRequestInternal(HttpServletRequest request,
-		HttpServletResponse response) throws Exception {
+	@RequestMapping("/hello")
+	public ModelAndView showMessage(
+			@RequestParam(value = "name", required = false, defaultValue = "World") String name) {
+		System.out.println("in controller");
  
-		ModelAndView model = new ModelAndView("HelloWorldPage");
-		model.addObject("msg", "hello world");
- 
-		return model;
+		ModelAndView mv = new ModelAndView("helloworld");
+		mv.addObject("message", message);
+		mv.addObject("name", name);
+		return mv;
 	}
-}
+} 
