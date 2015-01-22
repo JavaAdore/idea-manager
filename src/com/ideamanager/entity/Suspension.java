@@ -27,7 +27,7 @@ public class Suspension implements Marker , Serializable
 	
 	@ManyToOne()
 	@JoinColumn(name="OWNER_ID", referencedColumnName="ID",unique=true)
-	private Person owner;
+	private Person suspensionOwner;
 	
 	@Column(name="SUSPENSION_DATE")
 	private Date suspensionDate;
@@ -64,11 +64,13 @@ public class Suspension implements Marker , Serializable
 		ID = iD;
 	}
 	
-	public Person getOwner() {
-		return owner;
+
+	
+	public Person getSuspensionOwner() {
+		return suspensionOwner;
 	}
-	public void setOwner(Person owner) {
-		this.owner = owner;
+	public void setSuspensionOwner(Person suspensionOwner) {
+		this.suspensionOwner = suspensionOwner;
 	}
 	public String getReason() {
 		return reason;

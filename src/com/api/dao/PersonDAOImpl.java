@@ -3,23 +3,32 @@ package com.api.dao;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Query;
+
+
+
+
+
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.springframework.orm.hibernate4.HibernateCallback;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.general.utils.Util;
+import com.ideamanager.entity.Email;
 import com.ideamanager.entity.Person;
 
 
-
+@Repository
+@Transactional
 public class PersonDAOImpl extends AbstractDAO<Person> implements PersonDAO {
 
-	EntityManager entityManager = getEntityManagerFactory()
-			.createEntityManager();
-
-	public PersonDAOImpl() {
-		super.setEntityManager(entityManager);
-	}
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	public Person addPerson(Person Person) {
 
@@ -28,30 +37,20 @@ public class PersonDAOImpl extends AbstractDAO<Person> implements PersonDAO {
 
 	public List<Person> getAllPersons() {
 		// TODO Auto-generated method stub
-		return super.findAll(Person.class);
+		return super.getAll(Person.class);
 	}
 
 	public Person getPersonByID(Long ID) {
-		return super.getEntityByID(Person.class, ID);
+		return super.get(Person.class, ID);
 	}
 
 	public Person getMemeberByEmail(String email) {
-		EntityTransaction transaction = getEntityManager().getTransaction();
-		List<Person> result = new ArrayList();
-		try {
-			if (transaction.isActive() == false) {
-				transaction.begin();
-			}
-			Query query = getEntityManager().createQuery(
-					"from Person where lower(email) like :email");
-			query.setParameter("email", email.toLowerCase());
-			result = query.getResultList();
-			Util.isNotEmpty(result);
-			return Util.isNotEmpty(result) ? result.get(0) : null;
-		} finally {
-			transaction.commit();
-		}
-
+	
+		Query query = getCurrentSession().createQuery("select emailOwner from Email where lower (email) like :email ");
+		query.setParameter("email", email);
+		List<Person>  result = query.list();
+		return Util.isNotEmpty(result)?result.get(0):null;
+		
 	}
 
 

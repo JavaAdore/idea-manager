@@ -1,138 +1,141 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package com.api.dao;
+
+import com.general.utils.CustomException;
 
 import java.io.Serializable;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
-import javax.persistence.Query;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Example;
+import org.hibernate.internal.CriteriaImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate4.HibernateTemplate;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
 
-import com.general.utils.Constants;
-import com.general.utils.Marker;
+/**
+ * 
+ * @author orcl
+ */
+@Repository
+@Transactional
+public abstract class AbstractDAO<T extends Serializable> {
 
-
-
-
-public abstract class AbstractDAO<T extends Marker> implements Serializable {
-
-	/**
-	 * ;
-	 */
-	private static final long serialVersionUID = 1L;
-	protected EntityManagerFactory entityManagerFactory = Persistence
-			.createEntityManagerFactory("primary");
-
-	public AbstractDAO() {
-	}
-	
-	@PostConstruct
-	public void init()
-	{
-		
+	public HibernateTemplate getHibernateTemplate() {
+		return hibernateTemplate;
 	}
 
-	public AbstractDAO(EntityManager entityManager) {
-		this.entityManager = entityManager;
+	public void setHibernateTemplate(HibernateTemplate hibernateTemplate) {
+		this.hibernateTemplate = hibernateTemplate;
 	}
 
-	private EntityManager entityManager;
-
-	public EntityManager getEntityManager() {
-		return entityManager;
+	public TransactionTemplate getTransactionTemplate() {
+		return transactionTemplate;
 	}
-	
 
-	public T persist(T t) {
-		EntityTransaction transaction = null;
-		try {
-			transaction = entityManager.getTransaction();
-			if (transaction.isActive() == false) {
-				transaction.begin();
+	public void setTransactionTemplate(TransactionTemplate transactionTemplate) {
+		this.transactionTemplate = transactionTemplate;
+	}
+
+	@Autowired
+	private HibernateTemplate hibernateTemplate;
+	@Autowired
+	private TransactionTemplate transactionTemplate;
+	T t;
+
+	public T persist(final T serializedObjectToPersist) {
+
+		T result = transactionTemplate.execute(new TransactionCallback<T>() {
+			@Override
+			public T doInTransaction(TransactionStatus ts) {
+
+				hibernateTemplate.saveOrUpdate(serializedObjectToPersist);
+				return serializedObjectToPersist;
 			}
-			t = entityManager.merge(t);
-			transaction.commit();
-			return t;
-			
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			transaction.rollback();
-			return null;
-
-		}
-		
-	}
-
-	public T getEntityByID(Class clss, Long ID) {
-		return (T) entityManager.find(clss, ID);
-	}
-
-	public List<T> findAll(Class c) {
-		Query query = entityManager.createQuery(String.format("from %s",
-				c.getName()));
-		List result = query.getResultList();
+		});
 		return result;
+
 	}
 
-	public EntityManagerFactory getEntityManagerFactory() {
-		return entityManagerFactory;
-	}
-
-	public void setEntityManager(EntityManager entityManager) {
-
-		this.entityManager = entityManager;
-	}
-
-	public void delete(Marker marker) {
-		EntityTransaction transaction = null;
+	public void delete(final T serializedObjectToPersist)
+			throws CustomException {
 		try {
-			transaction = entityManager.getTransaction();
-			if (transaction.isActive() == false) {
-				transaction.begin();
+			transactionTemplate.execute(new TransactionCallback<T>() {
+				@Override
+				public T doInTransaction(TransactionStatus ts) {
+					try {
+						hibernateTemplate.delete(serializedObjectToPersist);
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
+					return null;
+				}
+			});
 
-			}
-			marker = entityManager.merge(marker);
-			entityManager.remove(marker);
-			transaction.commit();
 		} catch (Exception ex) {
-			transaction.rollback();
-			throw Constants.RUNTIME_EXCEPTION;
-		}
-	}
-
-	public <X extends Marker> X merge(X x) {
-		EntityTransaction transaction = null;
-		try {
-			transaction = entityManager.getTransaction();
-			if (transaction.isActive() == false) {
-				transaction.begin();
-			}
-			if(x.getID()!=null)
-			{
-			x = entityManager.merge(x);
-			}else
-			{
-				 entityManager.persist(x);
-				 
-			}
-			transaction.commit();
-		} catch (Exception ex) {
-			transaction.rollback();
 			ex.printStackTrace();
-			throw Constants.RUNTIME_EXCEPTION;
-
+			throw new CustomException("unableToDelete");
 		}
-		return x;
+
 	}
 
-	public void refresh(Marker marked) {
+	public void deleteAll(final List<T> serializedObjectsToDelete) {
 
-		entityManager.refresh(marked);
+		transactionTemplate.execute(new TransactionCallback<T>() {
+			@Override
+			public T doInTransaction(TransactionStatus ts) {
+
+				hibernateTemplate.deleteAll(serializedObjectsToDelete);
+
+				return null;
+			}
+		});
+
+	}
+
+	public T get(Class objectClass, Long id) {
+		try {
+
+			T result = (T) hibernateTemplate.get(objectClass, id);
+			return result;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return null;
+		}
+
+	}
+
+	public List<T> getAll(Class objectClass) {
+		try {
+			DetachedCriteria criteria = DetachedCriteria.forClass(objectClass);
+
+			return (List<T>) hibernateTemplate.findByCriteria(criteria);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return null;
+		}
 
 	}
 	
-	
 
+	public List<T> findByExample(T t) {
+	
+		return (List<T>) hibernateTemplate.findByExample(t);
+
+	}
+	
+	public Session getCurrentSession()
+	{
+		return getHibernateTemplate().getSessionFactory().getCurrentSession();
+	}
+	
 }

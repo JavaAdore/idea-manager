@@ -10,6 +10,9 @@ import java.util.List;
 
 
 
+
+import org.springframework.stereotype.Service;
+
 import com.business.service.PersonService;
 import com.general.utils.Constants;
 import com.general.utils.CustomException;
@@ -17,6 +20,7 @@ import com.general.utils.SpringUtils;
 import com.general.utils.Util;
 import com.ideamanager.entity.Person;
 
+@Service
 public class ProjectFacadeImpl implements ProjectFacade {
 
 	private PersonService personService;
@@ -65,6 +69,8 @@ public class ProjectFacadeImpl implements ProjectFacade {
 			String password, String confirmPassword, String pictureURL)
 			throws CustomException {
 		// TODO Auto-generated method stub
+		
+		
 		return null;
 	}
 }

@@ -2,11 +2,14 @@ package com.business.service;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.general.utils.Constants;
 import com.general.utils.CustomException;
 import com.ideamanager.entity.Person;
 import com.api.dao.*;
 
+@Service
 public class PersonServiceImpl implements PersonService {
 
 	/**

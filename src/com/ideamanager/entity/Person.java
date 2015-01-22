@@ -35,19 +35,19 @@ public class Person implements Marker , Serializable
 	private Date dateConfirmation;
 	private Date lastLogin;
 	
-	@OneToMany(mappedBy="owner")
+	@OneToMany(mappedBy="emailOwner")
 	private List<Email> emails;
 	
-	@OneToMany(mappedBy="owner")
+	@OneToMany(mappedBy="phoneOwner")
 	private List<Phone> phones;
 	
-	@OneToMany(mappedBy="owner")
+	@OneToMany(mappedBy="suspensionOwner")
 	private List<Suspension> suspension;
 	
-	@OneToOne(mappedBy="owner")
+	@OneToOne(mappedBy="statusOwner")
 	private PersonStatus personStatus;
 	
-	@OneToOne(mappedBy="ideaOwner")
+	@OneToOne(mappedBy="ideaOwner") 
 	private ProjectIdea projectIdea; 
 	
 	

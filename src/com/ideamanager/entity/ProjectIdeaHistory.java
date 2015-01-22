@@ -30,7 +30,7 @@ public class ProjectIdeaHistory implements Marker, Serializable {
 	@JoinColumn(name = "CHANGE_INITIATOR_ID", referencedColumnName = "ID", unique = true)
 	private Person changeInitiator;
 
-	@OneToMany
+	@ManyToOne 
 	@JoinColumn(name = "PROJECT_IDEA_ID", referencedColumnName = "ID", unique = true)
 	private ProjectIdea projectIdea;
 	

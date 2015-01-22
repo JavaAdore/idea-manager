@@ -3,12 +3,14 @@ package com.business.service;
 import java.io.Serializable;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.general.utils.CustomException;
 import com.ideamanager.entity.Person;
 
 
 
-
+@Service
 public interface PersonService extends Serializable{
 
 	/**
